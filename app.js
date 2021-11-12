@@ -2,8 +2,9 @@
 const express = require('express');
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
+const session = require('express-session');
 
-const { environment } = require('./config');
+const { environment, sessionSecret } = require('./config');
 const indexRoutes = require('./routes');
 const parkRoutes = require('./routes/park');
 const attractionRoutes = require('./routes/attraction');
@@ -13,7 +14,13 @@ const app = express();
 app.set('view engine', 'pug');
 
 app.use(morgan('dev'));
-app.use(cookieParser());
+app.use(cookieParser(sessionSecret));
+app.use(session({
+  name: 'amusement-park-tracker.sid',
+  secret: sessionSecret,
+  resave: false,
+  saveUninitialized: false,
+}));
 app.use(express.urlencoded({ extended: false }));
 app.use(indexRoutes);
 app.use(parkRoutes);
