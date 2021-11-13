@@ -5,6 +5,7 @@ const bcrypt = require('bcryptjs');
 
 const db = require('../db/models');
 const { csrfProtection, asyncHandler } = require('./utils');
+const { loginUser } = require('../auth');
 
 const router = express.Router();
 
@@ -83,6 +84,7 @@ router.post('/user/register', csrfProtection, userValidators,
     if (validatorErrors.isEmpty()) {
       user.hashedPassword = await bcrypt.hash(password, 10);
       await user.save();
+      loginUser(req, res, user);
       res.redirect('/');
     } else {
       const errors = validatorErrors.array().map((error) => error.msg);
@@ -126,7 +128,7 @@ router.post('/user/login', csrfProtection, loginValidators,
       if (user !== null) {
         const passwordMatch = await bcrypt.compare(password, user.hashedPassword.toString());
         if (passwordMatch) {
-          // TODO Log in the user
+          loginUser(req, res, user);
           return res.redirect('/');
         }
       }
