@@ -5,6 +5,7 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 
 const { environment, sessionSecret } = require('./config');
+const { restoreUser } = require('./auth');
 const indexRoutes = require('./routes');
 const parkRoutes = require('./routes/park');
 const attractionRoutes = require('./routes/attraction');
@@ -23,6 +24,7 @@ app.use(session({
   saveUninitialized: false,
 }));
 app.use(express.urlencoded({ extended: false }));
+app.use(restoreUser);
 app.use(indexRoutes);
 app.use(parkRoutes);
 app.use(attractionRoutes);
