@@ -1,0 +1,14 @@
+extends layout.pug 
+
+include utils.pug
+
+block content
+  +validationErrorSummary(errors)
+  form(action=`/attraction/${attraction.id}/visit/add` method='post')
+    input(type='hidden' name='_csrf' value=csrfToken)
+    +field('Visited On', 'visitedOn', attractionVisit.visitedOn, 'text', 'ex: 2000-01-31')
+    +field('Rating', 'rating', attractionVisit.rating)
+    +field('Comments', 'comments', attractionVisit.comments, 'textarea')
+    div
+      button(type='submit' class='btn btn-primary') Add Visit
+      a(href=`/attraction/${attraction.id}` class='btn btn-warning ml-2') Cancel 
